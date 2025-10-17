@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OPERACION HORIZONTE - Video C.O.N.N.E.X.</title>
+    <link rel="stylesheet" href="../styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: #000;
+            overflow: hidden;
+            font-family: 'Orbitron', monospace;
+        }
+        
+        .video-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #000;
+        }
+        
+        video {
+            max-width: 80%;
+            max-height: 80%;
+            object-fit: contain;
+            border: 2px solid #00ff00;
+            border-radius: 10px;
+            box-shadow: 0 0 30px rgba(0, 255, 0, 0.5);
+        }
+        
+        .video-overlay {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            z-index: 10;
+            color: #00ff00;
+            font-family: 'Orbitron', monospace;
+            text-shadow: 0 0 10px #00ff00;
+        }
+        
+        .video-title {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .video-subtitle {
+            font-size: 1rem;
+            opacity: 0.8;
+        }
+        
+        /* Sistema Hack alrededor del video */
+        .hack-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 5;
+        }
+        
+        .terminal-corner {
+            position: absolute;
+            width: 300px;
+            height: 200px;
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid #00ff00;
+            border-radius: 5px;
+            padding: 15px;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.8rem;
+            color: #00ff00;
+            text-shadow: 0 0 5px #00ff00;
+        }
+        
+        .terminal-corner.top-left {
+            top: 20px;
+            left: 20px;
+        }
+        
+        .terminal-corner.top-right {
+            top: 20px;
+            right: 20px;
+        }
+        
+        .terminal-corner.bottom-left {
+            bottom: 20px;
+            left: 20px;
+        }
+        
+        .terminal-corner.bottom-right {
+            bottom: 20px;
+            right: 20px;
+        }
+        
+        .terminal-line {
+            margin: 5px 0;
+            opacity: 0.8;
+        }
+        
+        .terminal-prompt {
+            color: #00ff00;
+        }
+        
+        .terminal-command {
+            color: #ffff00;
+        }
+        
+        .terminal-output {
+            color: #00ff00;
+        }
+        
+        .terminal-error {
+            color: #ff0000;
+        }
+        
+        .progress-bars {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 20px;
+        }
+        
+        .progress-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .progress-label {
+            font-size: 0.7rem;
+            color: #00ff00;
+            text-shadow: 0 0 5px #00ff00;
+        }
+        
+        .progress-bar {
+            width: 100px;
+            height: 8px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid #00ff00;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00ff00, #00ff9d);
+            width: 0%;
+            transition: width 2s ease;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        
+        .status-indicators {
+            position: absolute;
+            top: 50%;
+            right: 20px;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 12px;
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid #00ff00;
+            border-radius: 5px;
+            color: #00ff00;
+            font-size: 0.8rem;
+        }
+        
+        .status-indicator.active {
+            border-color: #ffff00;
+            color: #ffff00;
+            box-shadow: 0 0 10px rgba(255, 255, 0, 0.3);
+        }
+        
+        .status-indicator.completed {
+            border-color: #00ff9d;
+            color: #00ff9d;
+            box-shadow: 0 0 10px rgba(0, 255, 157, 0.3);
+        }
+        
+        .matrix-rain {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        .matrix-column {
+            position: absolute;
+            top: -100%;
+            color: #00ff00;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.8rem;
+            opacity: 0.3;
+            animation: matrix-fall linear infinite;
+        }
+        
+        @keyframes matrix-fall {
+            0% { top: -100%; }
+            100% { top: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Efecto Matrix Rain -->
+    <div class="matrix-rain" id="matrixRain"></div>
+    
+    <!-- Contenedor del video -->
+    <div class="video-container">
+        <!-- Overlay con información -->
+        <div class="video-overlay">
+            <div class="video-title">OPERACION HORIZONTE</div>
+            <div class="video-subtitle">MISIÓN C.O.N.N.E.X.</div>
+        </div>
+
+        <!-- Sistema Hack alrededor del video -->
+        <div class="hack-overlay">
+            <!-- Terminales en las esquinas -->
+            <div class="terminal-corner top-left">
+                <div class="terminal-line">
+                    <span class="terminal-prompt">CONNEX@system:~$</span> 
+                    <span class="terminal-command">init_security</span>
+                </div>
+                <div class="terminal-line">
+                    <span class="terminal-output">Sistema iniciado...</span>
+                </div>
+                <div class="terminal-line">
+                    <span class="terminal-prompt">CONNEX@system:~$</span> 
+                    <span class="terminal-command">scan_groups</span>
+                </div>
+                <div class="terminal-line">
+                    <span class="terminal-output">Escaneando grupos culturales...</span>
+                </div>
+                <div class="terminal-line">
+                    <span class="terminal-prompt">CONNEX@system:~$</span> 
+                    <span class="terminal-command">status</span>
+                </div>
+                <div class="terminal-line">
+                    <span class="terminal-output">Estado: ACTIVO</span>
+            </div>
+        </div>
+
+            <div class="terminal-corner top-right">
+                <div class="terminal-line">
+                    <span class="terminal-prompt">CONNEX@monitor:~$</span> 
+                    <span class="terminal-command">watch_groups</span>
+                </div>
+                        <div class="terminal-line">
+                    <span class="terminal-output">Grupo 1: XXXXX - Cargando...</span>
+                        </div>
+                        <div class="terminal-line">
+                    <span class="terminal-output">Grupo 2: XXXXX - Cargando...</span>
+                        </div>
+                        <div class="terminal-line">
+                    <span class="terminal-output">Grupo 3: XXXXX - Cargando...</span>
+                        </div>
+                        <div class="terminal-line">
+                    <span class="terminal-output">Grupo 4: XXXXX - Cargando...</span>
+                        </div>
+                        <div class="terminal-line">
+                    <span class="terminal-prompt">CONNEX@monitor:~$</span> 
+                    <span class="terminal-command">analyze_progress</span>
+                </div>
+            </div>
+
+            <div class="terminal-corner bottom-left">
+                <div class="terminal-line">
+                    <span class="terminal-prompt">CONNEX@cipher:~$</span> 
+                    <span class="terminal-command">decrypt_table</span>
+                </div>
+                <div class="terminal-line">
+                    <span class="terminal-output">Tabla de cifrado generada</span>
+                </div>
+                <div class="terminal-line">
+                    <span class="terminal-prompt">CONNEX@cipher:~$</span> 
+                    <span class="terminal-command">verify_keys</span>
+                        </div>
+                <div class="terminal-line">
+                    <span class="terminal-output">Claves verificadas: 4/4</span>
+                    </div>
+                <div class="terminal-line">
+                    <span class="terminal-prompt">CONNEX@cipher:~$</span> 
+                    <span class="terminal-command">unlock_system</span>
+                            </div>
+                <div class="terminal-line">
+                    <span class="terminal-output">Sistema desbloqueado</span>
+                        </div>
+                    </div>
+            
+            <div class="terminal-corner bottom-right">
+                <div class="terminal-line">
+                    <span class="terminal-prompt">CONNEX@final:~$</span> 
+                    <span class="terminal-command">mission_status</span>
+                </div>
+                <div class="terminal-line">
+                    <span class="terminal-output">Misión: EN PROGRESO</span>
+                </div>
+                <div class="terminal-line">
+                    <span class="terminal-prompt">CONNEX@final:~$</span> 
+                    <span class="terminal-command">check_completion</span>
+                        </div>
+                <div class="terminal-line">
+                    <span class="terminal-output">Progreso: 75%</span>
+                    </div>
+                <div class="terminal-line">
+                    <span class="terminal-prompt">CONNEX@final:~$</span> 
+                    <span class="terminal-command">await_final</span>
+                            </div>
+                <div class="terminal-line">
+                    <span class="terminal-output">Esperando desbloqueo final...</span>
+                        </div>
+                    </div>
+            
+            <!-- Indicadores de estado -->
+            <div class="status-indicators">
+                <div class="status-indicator active">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>IDENTIFICACIÓN</span>
+                </div>
+                <div class="status-indicator active">
+                    <i class="fas fa-key"></i>
+                    <span>CIFRADO</span>
+                </div>
+                <div class="status-indicator">
+                        <i class="fas fa-unlock"></i>
+                    <span>DESBLOQUEO</span>
+                </div>
+                <div class="status-indicator">
+                    <i class="fas fa-check-circle"></i>
+                    <span>COMPLETADO</span>
+                        </div>
+                    </div>
+            
+            <!-- Barras de progreso -->
+            <div class="progress-bars">
+                <div class="progress-item">
+                    <div class="progress-label">GRUPOS</div>
+                            <div class="progress-bar">
+                        <div class="progress-fill" style="width: 100%"></div>
+                    </div>
+                </div>
+                <div class="progress-item">
+                    <div class="progress-label">CIFRADO</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 100%"></div>
+                    </div>
+                </div>
+                <div class="progress-item">
+                    <div class="progress-label">CANDADOS</div>
+                            <div class="progress-bar">
+                        <div class="progress-fill" style="width: 75%"></div>
+                    </div>
+                </div>
+                <div class="progress-item">
+                    <div class="progress-label">MISIÓN</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 75%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Video incrustado -->
+        <video id="connexVideo" controls autoplay muted>
+            <source src="CONNEX.mp4" type="video/mp4">
+            Tu navegador no soporta el elemento de video.
+        </video>
+    </div>
+
+    <script>
+        // Configuración del video
+        const video = document.getElementById('connexVideo');
+        
+        // Reproducir automáticamente cuando esté listo
+        video.addEventListener('loadeddata', function() {
+            video.play().catch(e => {
+                console.log('Autoplay bloqueado:', e);
+            });
+        });
+        
+        // Ocultar overlay después de 3 segundos
+        setTimeout(() => {
+            const overlay = document.querySelector('.video-overlay');
+            overlay.style.opacity = '0';
+            overlay.style.transition = 'opacity 1s ease-out';
+        }, 3000);
+        
+        // Mostrar overlay al hacer hover
+        document.addEventListener('mousemove', function() {
+            const overlay = document.querySelector('.video-overlay');
+            overlay.style.opacity = '1';
+            overlay.style.transition = 'opacity 0.3s ease-in';
+        });
+        
+        // Ocultar overlay después de 2 segundos sin movimiento
+        let hideTimeout;
+        document.addEventListener('mousemove', function() {
+            clearTimeout(hideTimeout);
+            hideTimeout = setTimeout(() => {
+                const overlay = document.querySelector('.video-overlay');
+                overlay.style.opacity = '0';
+                overlay.style.transition = 'opacity 1s ease-out';
+            }, 2000);
+        });
+        
+        // Efecto Matrix Rain
+        function createMatrixRain() {
+            const matrixRain = document.getElementById('matrixRain');
+            const characters = '01ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            
+            for (let i = 0; i < 50; i++) {
+                const column = document.createElement('div');
+                column.className = 'matrix-column';
+                column.style.left = Math.random() * 100 + '%';
+                column.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                column.style.animationDelay = Math.random() * 2 + 's';
+                
+                let text = '';
+                for (let j = 0; j < 20; j++) {
+                    text += characters[Math.floor(Math.random() * characters.length)] + '<br>';
+                }
+                column.innerHTML = text;
+                
+                matrixRain.appendChild(column);
+            }
+        }
+        
+        // Efectos dinámicos en terminales
+        function animateTerminals() {
+            const terminals = document.querySelectorAll('.terminal-corner');
+            terminals.forEach((terminal, index) => {
+                setTimeout(() => {
+                    terminal.style.opacity = '0';
+                    terminal.style.transform = 'scale(0.8)';
+                    terminal.style.transition = 'all 0.5s ease';
+                    
+                    setTimeout(() => {
+                        terminal.style.opacity = '1';
+                        terminal.style.transform = 'scale(1)';
+                    }, 200);
+                }, index * 500);
+            });
+        }
+        
+        // Animación de barras de progreso
+        function animateProgressBars() {
+            const progressBars = document.querySelectorAll('.progress-fill');
+            progressBars.forEach((bar, index) => {
+                setTimeout(() => {
+                    const width = bar.style.width;
+                    bar.style.width = '0%';
+                    setTimeout(() => {
+                        bar.style.width = width;
+                    }, 100);
+                }, index * 300);
+            });
+        }
+        
+        // Cambio dinámico de indicadores de estado
+        function animateStatusIndicators() {
+            const indicators = document.querySelectorAll('.status-indicator');
+            let currentIndex = 0;
+            
+            setInterval(() => {
+                indicators.forEach((indicator, index) => {
+                    if (index <= currentIndex) {
+                        indicator.classList.add('active');
+                    } else {
+                        indicator.classList.remove('active');
+                    }
+                });
+                
+                currentIndex = (currentIndex + 1) % indicators.length;
+            }, 3000);
+        }
+        
+        // Actualización dinámica de terminales
+        function updateTerminals() {
+            const terminals = document.querySelectorAll('.terminal-corner');
+            const commands = [
+                'scan_groups', 'analyze_data', 'decrypt_keys', 'unlock_system',
+                'monitor_progress', 'verify_connections', 'check_status', 'finalize_mission'
+            ];
+            
+            setInterval(() => {
+                terminals.forEach(terminal => {
+                    const lastLine = terminal.querySelector('.terminal-line:last-child');
+                    if (lastLine && lastLine.querySelector('.terminal-prompt')) {
+                        const newLine = document.createElement('div');
+                        newLine.className = 'terminal-line';
+                        newLine.innerHTML = `
+                            <span class="terminal-prompt">CONNEX@system:~$</span> 
+                            <span class="terminal-command">${commands[Math.floor(Math.random() * commands.length)]}</span>
+                        `;
+                        terminal.appendChild(newLine);
+                        
+                        // Mantener solo las últimas 6 líneas
+                        const lines = terminal.querySelectorAll('.terminal-line');
+                        if (lines.length > 6) {
+                            terminal.removeChild(lines[0]);
+                        }
+                    }
+                });
+            }, 5000);
+        }
+        
+        // Inicializar efectos
+        document.addEventListener('DOMContentLoaded', function() {
+            createMatrixRain();
+            animateTerminals();
+            animateProgressBars();
+            animateStatusIndicators();
+            updateTerminals();
+        });
+    </script>
+</body>
+</html>
+</html>

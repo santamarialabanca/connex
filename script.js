@@ -675,7 +675,7 @@ function setupLockSystem() {
 
 function cycleWheel(index) {
     const wheel = document.getElementById(`wheel${index + 1}`);
-    const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    const letters = 'ABCDEFGHIJKLMNÑOPQRSTUVWXYZ';
     const currentLetter = wheel.textContent;
     const currentIndex = letters.indexOf(currentLetter);
     const nextIndex = (currentIndex + 1) % letters.length;

@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OPERACION HORIZONTE - Misión C.O.N.N.E.X.</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Efecto de lluvia digital -->
+    <div id="matrix-rain"></div>
+    
+    <!-- Contenedor principal -->
+    <div class="container">
+        <!-- Header principal -->
+        <header class="main-header">
+            <div class="glitch-container">
+                <h1 class="glitch-title" data-text="OPERACION HORIZONTE">OPERACION HORIZONTE</h1>
+            </div>
+            <div class="subtitle">
+                <span class="terminal-text">MISIÓN C.O.N.N.E.X.</span>
+            </div>
+            <div class="info-line">Conecta culturas • Descifra códigos • Desbloquea secretos</div>
+        </header>
+
+        <!-- Información del evento -->
+        <div class="event-info">
+            <div class="info-block">
+                <div class="info-line">[COLEGIO: SANTA MARÍA LA BLANCA]</div>
+                <div class="info-line">[GRUPO: ULTIMA THULE - ESO]</div>
+                <div class="info-line">[CURSO: 2025-2026]</div>
+                <div class="info-line">[DIA: VIERNES]</div>
+                <div class="info-line">[HORA: 10:20]</div>
+                <div class="info-line">[LUGAR: LABORATORIOS]</div>
+            </div>
+            <div class="ssid-info">
+                <span class="ssid-text">SSID: RED C.O.N.N.E.X</span>
+            </div>
+        </div>
+
+        <!-- Instrucciones para Estudiantes -->
+        <div class="student-instructions">
+            <h3>INSTRUCCIONES PARA ESTUDIANTES</h3>
+            <div class="instruction-steps">
+                <div class="step">
+                    <span class="step-number">1</span>
+                    <span class="step-text">Cada alumno recibe una tarjeta con un símbolo cultural</span>
+                </div>
+                <div class="step">
+                    <span class="step-number">2</span>
+                    <span class="step-text">Busca a otros con símbolos relacionados culturalmente</span>
+                </div>
+                <div class="step">
+                    <span class="step-number">3</span>
+                    <span class="step-text">Forma un grupo de 5 personas con conexión coherente</span>
+                </div>
+                <div class="step">
+                    <span class="step-number">4</span>
+                    <span class="step-text">Resuelve el desafío final para descubrir vuestro país</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sistema de Ventanas Progresivas -->
+        <div class="hack-system">
+            <div class="terminal-window" id="terminalWindow">
+                <div class="terminal-header">
+                    <div class="terminal-buttons">
+                        <span class="btn-close"></span>
+                        <span class="btn-minimize"></span>
+                        <span class="btn-maximize"></span>
+                    </div>
+                    <div class="terminal-title">Sistema CONNEX - Terminal de Acceso</div>
+                </div>
+                <div class="terminal-body">
+                    <div class="terminal-output" id="terminalOutput">
+                        <div class="terminal-line">
+                            <span class="prompt">CONNEX@system:~$</span> 
+                            <span class="command">init_security_protocol</span>
+                        </div>
+                        <div class="terminal-line">
+                            <span class="output">Sistema de seguridad iniciado...</span>
+                        </div>
+                        <div class="terminal-line">
+                            <span class="output error">ERROR: Múltiples intrusiones detectadas</span>
+                        </div>
+                        <div class="terminal-line">
+                            <span class="output">Sistema comprometido. Requiere restauración manual.</span>
+                        </div>
+                        <div class="terminal-line">
+                            <span class="prompt">CONNEX@system:~$</span> 
+                            <span class="cursor">█</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="progress-windows">
+                <div class="window-level" id="level1" data-level="1">
+                    <div class="window-header">
+                        <i class="fas fa-shield-alt"></i>
+                        <span>Nivel 1: Identificación Cultural</span>
+                        <div class="window-status locked">
+                            <i class="fas fa-lock"></i>
+                        </div>
+                    </div>
+                    <div class="window-content">
+                        <p>Agrupa las tarjetas por cultura común</p>
+                        <div class="progress-indicator">
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 0%"></div>
+                            </div>
+                            <span class="progress-text">0/4 grupos completados</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="window-level" id="level2" data-level="2">
+                    <div class="window-header">
+                        <i class="fas fa-key"></i>
+                        <span>Nivel 2: Descifrado de Código</span>
+                        <div class="window-status locked">
+                            <i class="fas fa-lock"></i>
+                        </div>
+                    </div>
+                    <div class="window-content">
+                        <p>Usa la tabla de cifrado para descifrar el país</p>
+                        <div class="progress-indicator">
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 0%"></div>
+                            </div>
+                            <span class="progress-text">0/4 países descifrados</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="window-level" id="level3" data-level="3">
+                    <div class="window-header">
+                        <i class="fas fa-unlock"></i>
+                        <span>Nivel 3: Desbloqueo del Sistema</span>
+                        <div class="window-status locked">
+                            <i class="fas fa-lock"></i>
+                        </div>
+                    </div>
+                    <div class="window-content">
+                        <p>Introduce el código de 5 letras para desbloquear</p>
+                        <div class="progress-indicator">
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 0%"></div>
+                            </div>
+                            <span class="progress-text">0/4 candados abiertos</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="window-level" id="level4" data-level="4">
+                    <div class="window-header">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Nivel 4: Restauración Completa</span>
+                        <div class="window-status locked">
+                            <i class="fas fa-lock"></i>
+                        </div>
+                    </div>
+                    <div class="window-content">
+                        <p>Sistema completamente restaurado</p>
+                        <div class="progress-indicator">
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 0%"></div>
+                            </div>
+                            <span class="progress-text">Misión completada</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="system-commands">
+                <div class="command-panel">
+                    <h3>Comandos del Sistema</h3>
+                    <div class="command-list">
+                        <div class="command-item" data-command="status">
+                            <i class="fas fa-info-circle"></i>
+                            <span>status</span>
+                            <small>Verificar estado del sistema</small>
+                        </div>
+                        <div class="command-item" data-command="scan">
+                            <i class="fas fa-search"></i>
+                            <span>scan</span>
+                            <small>Escanear grupos culturales</small>
+                        </div>
+                        <div class="command-item" data-command="decrypt">
+                            <i class="fas fa-unlock-alt"></i>
+                            <span>decrypt</span>
+                            <small>Iniciar proceso de descifrado</small>
+                        </div>
+                        <div class="command-item" data-command="unlock">
+                            <i class="fas fa-key"></i>
+                            <span>unlock</span>
+                            <small>Desbloquear sistema principal</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sistema de Tarjetas Culturales -->
+        <div class="card-section">
+            <h2 class="section-title">SISTEMA DE TARJETAS CULTURALES</h2>
+            <div class="card-grid" id="cardGrid">
+                <!-- Las tarjetas se generarán dinámicamente -->
+            </div>
+            <div class="group-status" id="groupStatus">
+                <span>Selecciona 5 tarjetas del mismo país</span>
+            </div>
+        </div>
+
+        <!-- Sistema de Tablas de Cifrado -->
+        <div class="cipher-system">
+            <h2 class="section-title">SISTEMA DE CIFRADO C.O.N.N.E.X.</h2>
+            <div class="cipher-controls">
+                <button id="requestTable" class="action-btn" aria-describedby="table-help">SOLICITAR TABLA DE CIFRADO</button>
+                <div id="table-help" class="sr-only">Solicita la tabla de cifrado para tu grupo</div>
+            </div>
+            <div class="cipher-display" id="cipherDisplay" role="region" aria-label="Tabla de cifrado">
+                <!-- La tabla se mostrará aquí -->
+            </div>
+        </div>
+
+        <!-- Sistema de Candado -->
+        <div class="lock-system">
+            <h2 class="section-title">SISTEMA DE DESBLOQUEO</h2>
+            <div class="lock-container">
+                <div class="lock-display">
+                    <div class="lock-wheel" id="wheel1" tabindex="0" role="button" aria-label="Rueda 1 del candado">A</div>
+                    <div class="lock-wheel" id="wheel2" tabindex="0" role="button" aria-label="Rueda 2 del candado">A</div>
+                    <div class="lock-wheel" id="wheel3" tabindex="0" role="button" aria-label="Rueda 3 del candado">A</div>
+                    <div class="lock-wheel" id="wheel4" tabindex="0" role="button" aria-label="Rueda 4 del candado">A</div>
+                    <div class="lock-wheel" id="wheel5" tabindex="0" role="button" aria-label="Rueda 5 del candado">A</div>
+                </div>
+                <button id="unlockBtn" class="unlock-btn" aria-describedby="unlock-help">ABRIR CANDADO</button>
+                <div id="unlock-help" class="sr-only">Intenta abrir el candado con la combinación correcta</div>
+                <div id="lockStatus" class="lock-status" aria-live="polite"></div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Scripts -->
+    <script src="script.js"></script>
+    <script>
+        // Configurar como estudiante general (sin grupo específico)
+        window.isFacilitator = false;
+        window.currentGroup = null;
+    </script>
+</body>
+</html>

@@ -283,12 +283,17 @@ function checkGroupFormation() {
     if (uniqueCountries.length === 1) {
         // Grupo válido formado
         const country = uniqueCountries[0];
-        showNotification(`¡Grupo ${country.toUpperCase()} formado correctamente!`, 'success');
+        showNotification(`¡Grupo de investigación formado correctamente!`, 'success');
         
         // Registrar progreso del hack
         gameState.completedGroups.add(country);
         gameState.currentGroup = country;
         gameState.groupCards[country] = gameState.selectedCards.map(card => ({ ...card }));
+        
+        console.log('=== GRUPO FORMADO ===');
+        console.log('País del grupo:', country);
+        console.log('currentGroup establecido:', gameState.currentGroup);
+        console.log('Tarjetas del grupo:', gameState.groupCards[country]);
         gameState.currentGroupCards = gameState.groupCards[country];
         refreshHackProgress();
         
@@ -648,7 +653,7 @@ function updateGroupStatus() {
         const uniqueCountries = [...new Set(countries)];
         
         if (uniqueCountries.length === 1) {
-            groupStatusElement.textContent = `¡Grupo ${uniqueCountries[0].toUpperCase()} formado! Solicita la tabla de cifrado`;
+            groupStatusElement.textContent = `¡Grupo de investigación formado! Solicita la tabla de cifrado`;
             groupStatusElement.className = 'group-status success';
         } else {
             groupStatusElement.textContent = 'Las tarjetas seleccionadas no son del mismo país';
@@ -660,50 +665,301 @@ function updateGroupStatus() {
 // Sistema de Candado
 function setupLockSystem() {
     const wheels = document.querySelectorAll('.lock-wheel');
+    console.log('=== SETUP LOCK SYSTEM ===');
+    console.log('Ruedas encontradas:', wheels.length);
+    
+    // Limpiar event listeners existentes para evitar duplicados
     wheels.forEach((wheel, index) => {
-        wheel.addEventListener('click', () => cycleWheel(index));
-        wheel.addEventListener('keydown', (e) => {
+        console.log(`Configurando rueda ${index + 1}:`, wheel);
+        
+        // Remover listeners existentes
+        wheel.removeEventListener('click', wheel._clickHandler);
+        wheel.removeEventListener('keydown', wheel._keyHandler);
+        
+        // Crear nuevos handlers
+        wheel._clickHandler = (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            console.log(`CLICK en rueda ${index + 1}`);
+            cycleWheel(index);
+        };
+        
+        wheel._keyHandler = (e) => {
             if (e.key === 'Enter' || e.key === ' ') {
                 e.preventDefault();
+                e.stopPropagation();
+                console.log(`KEYDOWN en rueda ${index + 1}`);
                 cycleWheel(index);
             }
-        });
+        };
+        
+        // Añadir listeners
+        wheel.addEventListener('click', wheel._clickHandler);
+        wheel.addEventListener('keydown', wheel._keyHandler);
     });
     
-    document.getElementById('unlockBtn').addEventListener('click', attemptUnlock);
+    const unlockBtn = document.getElementById('unlockBtn');
+    if (unlockBtn) {
+        unlockBtn.removeEventListener('click', unlockBtn._unlockHandler);
+        unlockBtn._unlockHandler = attemptUnlock;
+        unlockBtn.addEventListener('click', unlockBtn._unlockHandler);
+    }
+    
+    // Función de prueba para verificar todas las letras
+    testAllLetters();
 }
 
-function cycleWheel(index) {
-    const wheel = document.getElementById(`wheel${index + 1}`);
+function testAllLetters() {
+    console.log('=== PRUEBA DE TODAS LAS LETRAS ===');
     const letters = 'ABCDEFGHIJKLMNÑOPQRSTUVWXYZ';
-    const currentLetter = wheel.textContent;
+    console.log('Alfabeto completo:', letters);
+    console.log('Total de letras:', letters.length);
+    
+    // Verificar que cada letra se puede mostrar
+    const wheel = document.getElementById('wheel1');
+    if (wheel) {
+        console.log('Probando todas las letras en la primera rueda...');
+        letters.split('').forEach((letter, index) => {
+            wheel.textContent = letter;
+            console.log(`Letra ${index + 1}: ${letter} - Mostrada: ${wheel.textContent}`);
+        });
+        // Restaurar letra inicial
+        wheel.textContent = 'A';
+    }
+    
+    // Añadir función de prueba manual al objeto window para depuración
+    window.testWheelCycle = function(wheelIndex = 0) {
+        console.log(`=== PRUEBA MANUAL DE RUEDA ${wheelIndex + 1} ===`);
+        const wheel = document.getElementById(`wheel${wheelIndex + 1}`);
+        if (!wheel) {
+            console.error('Rueda no encontrada');
+            return;
+        }
+        
+        console.log('Estado inicial:', wheel.textContent);
+        
+        // Simular 10 clics con delay para evitar conflictos
+        let clickCount = 0;
+        const simulateClick = () => {
+            if (clickCount < 10) {
+                console.log(`--- Simulando clic ${clickCount + 1} ---`);
+                cycleWheel(wheelIndex);
+                clickCount++;
+                setTimeout(simulateClick, 600); // Delay de 600ms para evitar conflictos
+            } else {
+                console.log('=== PRUEBA COMPLETADA ===');
+            }
+        };
+        
+        simulateClick();
+    };
+    
+    // Función adicional para probar secuencia completa
+    window.testFullSequence = function(wheelIndex = 0) {
+        console.log(`=== PRUEBA SECUENCIA COMPLETA RUEDA ${wheelIndex + 1} ===`);
+        const wheel = document.getElementById(`wheel${wheelIndex + 1}`);
+        if (!wheel) {
+            console.error('Rueda no encontrada');
+            return;
+        }
+        
+        const letters = 'ABCDEFGHIJKLMNÑOPQRSTUVWXYZ';
+        console.log('Secuencia esperada:', letters);
+        
+        // Resetear a A
+        wheel.textContent = 'A';
+        gameState.lockCombination[wheelIndex] = 'A';
+        
+        let currentIndex = 0;
+        const testNext = () => {
+            if (currentIndex < letters.length - 1) {
+                cycleWheel(wheelIndex);
+                currentIndex++;
+                setTimeout(testNext, 100);
+            } else {
+                console.log('=== SECUENCIA COMPLETA PROBADA ===');
+            }
+        };
+        
+        setTimeout(testNext, 100);
+    };
+    
+    // Función de diagnóstico completo
+    window.diagnoseWheel = function(wheelIndex = 0) {
+        console.log(`=== DIAGNÓSTICO COMPLETO RUEDA ${wheelIndex + 1} ===`);
+        const wheel = document.getElementById(`wheel${wheelIndex + 1}`);
+        if (!wheel) {
+            console.error('Rueda no encontrada');
+            return;
+        }
+        
+        console.log('Elemento DOM:', wheel);
+        console.log('textContent actual:', wheel.textContent);
+        console.log('innerHTML actual:', wheel.innerHTML);
+        console.log('Clases CSS:', wheel.className);
+        console.log('Event listeners:', wheel._clickHandler ? 'Presente' : 'Ausente');
+        
+        // Probar cambio directo
+        console.log('--- Probando cambio directo ---');
+        wheel.textContent = 'B';
+        console.log('Después de cambiar a B:', wheel.textContent);
+        
+        wheel.textContent = 'C';
+        console.log('Después de cambiar a C:', wheel.textContent);
+        
+        wheel.textContent = 'A';
+        console.log('Restaurado a A:', wheel.textContent);
+        
+        // Probar función cycleWheel
+        console.log('--- Probando función cycleWheel ---');
+        console.log('Estado antes:', wheel.textContent);
+        cycleWheel(wheelIndex);
+        console.log('Estado después:', wheel.textContent);
+        
+        console.log('=== DIAGNÓSTICO COMPLETADO ===');
+    };
+    
+    // Función de prueba completa del flujo
+    window.testCompleteFlow = function(country = 'italia') {
+        console.log(`=== PRUEBA COMPLETA DEL FLUJO PARA ${country.toUpperCase()} ===`);
+        
+        // Simular formación de grupo
+        console.log('1. Simulando formación de grupo...');
+        gameState.selectedCards = culturalCards[country].map((card, index) => ({
+            ...card,
+            country: country,
+            index: index,
+            element: null
+        }));
+        
+        checkGroupFormation();
+        
+        setTimeout(() => {
+            console.log('2. Simulando solicitud de tabla de cifrado...');
+            requestCipherTable();
+            
+            setTimeout(() => {
+                console.log('3. Simulando combinación correcta en candado...');
+                const correctAnswer = country === 'italia' ? 'ITALY' : country.toUpperCase();
+                console.log('Combinación correcta:', correctAnswer);
+                
+                // Establecer combinación correcta
+                gameState.lockCombination = correctAnswer.split('');
+                console.log('Combinación establecida:', gameState.lockCombination);
+                
+                setTimeout(() => {
+                    console.log('4. Intentando abrir candado...');
+                    attemptUnlock();
+                }, 1000);
+            }, 1000);
+        }, 1000);
+    };
+    
+    console.log('Funciones de prueba disponibles:');
+    console.log('- window.testWheelCycle(0) - Prueba de 10 clics');
+    console.log('- window.testFullSequence(0) - Prueba de secuencia completa');
+    console.log('- window.diagnoseWheel(0) - Diagnóstico completo');
+    console.log('- window.testCompleteFlow("italia") - Prueba flujo completo');
+}
+
+// Variable global para evitar múltiples ejecuciones simultáneas
+let wheelCycling = false;
+
+function cycleWheel(index) {
+    // Prevenir múltiples ejecuciones simultáneas
+    if (wheelCycling) {
+        console.log('=== CYCLE WHEEL BLOQUEADO (ya en ejecución) ===');
+        return;
+    }
+    
+    wheelCycling = true;
+    
+    console.log('=== CYCLE WHEEL LLAMADO ===');
+    console.log('Índice de rueda:', index);
+    console.log('Timestamp:', Date.now());
+    
+    const wheel = document.getElementById(`wheel${index + 1}`);
+    if (!wheel) {
+        console.error('No se encontró la rueda:', `wheel${index + 1}`);
+        wheelCycling = false;
+        return;
+    }
+    
+    const letters = 'ABCDEFGHIJKLMNÑOPQRSTUVWXYZ';
+    const currentLetter = wheel.textContent.trim();
     const currentIndex = letters.indexOf(currentLetter);
+    
+    console.log('Letra actual:', currentLetter);
+    console.log('Índice actual:', currentIndex);
+    console.log('Alfabeto completo:', letters);
+    
+    // Verificar que la letra actual existe en el alfabeto
+    if (currentIndex === -1) {
+        console.error('Letra actual no encontrada en el alfabeto:', currentLetter);
+        wheel.textContent = 'A';
+        gameState.lockCombination[index] = 'A';
+        wheelCycling = false;
+        return;
+    }
+    
     const nextIndex = (currentIndex + 1) % letters.length;
     const nextLetter = letters[nextIndex];
     
+    console.log('Siguiente letra:', nextLetter);
+    console.log('Índice siguiente:', nextIndex);
+    console.log('Cálculo: (', currentIndex, '+ 1) %', letters.length, '=', nextIndex);
+    
+    // Actualizar DOM y estado
     wheel.textContent = nextLetter;
     gameState.lockCombination[index] = nextLetter;
     
+    console.log('Combinación actualizada:', gameState.lockCombination);
+    console.log('Letra confirmada en DOM:', wheel.textContent);
+    
     // Efecto visual
     wheel.classList.add('success-animation');
-    setTimeout(() => wheel.classList.remove('success-animation'), 500);
+    setTimeout(() => {
+        wheel.classList.remove('success-animation');
+        wheelCycling = false; // Liberar el bloqueo después del efecto visual
+    }, 500);
 }
 
 function attemptUnlock() {
+    console.log('=== ATTEMPT UNLOCK LLAMADO ===');
     const combination = gameState.lockCombination.join('');
     const statusElement = document.getElementById('lockStatus');
     const unlockBtn = document.getElementById('unlockBtn');
     
+    console.log('Combinación actual:', combination);
+    console.log('Grupo actual:', gameState.currentGroup);
+    console.log('Tablas de cifrado desbloqueadas:', Array.from(gameState.cipherTablesUnlocked));
+    console.log('Nivel 3 desbloqueado:', gameState.hackProgress.level3.unlocked);
+    
     if (!gameState.hackProgress.level3.unlocked) {
-        statusElement.textContent = 'Necesitas todas las tablas de cifrado antes de abrir el candado';
-        statusElement.className = 'lock-status error';
-        showNotification('Obtén las tablas de cifrado de los cuatro países antes de intentar abrir el candado', 'warning');
-        return;
+        // Verificar si el grupo actual tiene su tabla de cifrado
+        if (gameState.currentGroup && gameState.cipherTablesUnlocked.has(gameState.currentGroup)) {
+            console.log('Grupo actual tiene tabla de cifrado, permitiendo acceso al candado');
+            // Permitir acceso al candado para este grupo específico
+        } else {
+            statusElement.textContent = 'Necesitas la tabla de cifrado de tu grupo antes de abrir el candado';
+            statusElement.className = 'lock-status error';
+            showNotification('Obtén la tabla de cifrado de tu grupo antes de intentar abrir el candado', 'warning');
+            return;
+        }
     }
     
     // Verificar si hay un grupo formado
     if (gameState.currentGroup) {
-        const correctAnswer = gameState.currentGroup.toUpperCase();
+        let correctAnswer = gameState.currentGroup.toUpperCase();
+        
+        // Caso especial para Italia - debe ser "ITALY" en lugar de "ITALIA"
+        if (gameState.currentGroup === 'italia') {
+            correctAnswer = 'ITALY';
+        }
+        
+        console.log('Respuesta correcta esperada:', correctAnswer);
+        console.log('Combinación introducida:', combination);
+        console.log('¿Son iguales?', combination === correctAnswer);
         
         if (combination === correctAnswer) {
             const alreadyUnlocked = gameState.locksOpened.has(gameState.currentGroup);
@@ -716,7 +972,7 @@ function attemptUnlock() {
             refreshHackProgress();
             
             const feedbackMessage = alreadyUnlocked
-                ? `El candado de ${gameState.currentGroup.toUpperCase()} ya estaba abierto.`
+                ? `El candado de investigación ya estaba abierto.`
                 : '¡CANDADO ABIERTO! Sistema parcialmente restaurado.';
             showNotification(feedbackMessage, alreadyUnlocked ? 'info' : 'success');
             
@@ -766,6 +1022,11 @@ function requestCipherTable() {
     gameState.currentGroup = country;
     gameState.currentGroupCards = cards.map(card => ({ ...card }));
     gameState.groupCards[country] = cards.map(card => ({ ...card }));
+    
+    console.log('=== SOLICITUD TABLA DE CIFRADO ===');
+    console.log('País detectado:', country);
+    console.log('currentGroup actualizado:', gameState.currentGroup);
+    console.log('Tarjetas para tabla:', cards);
     
     showCipherTable(country, cards);
 }
@@ -868,7 +1129,7 @@ function showCipherTable(country, cards = null) {
     
     updateMonitoringOnCipherRequest(country);
     updateSyncOnCipherRequest(country);
-    addTerminalCommand(`decrypt_table ${country}`);
+    addTerminalCommand(`decrypt_table grupo_investigacion`);
     
     const feedbackMessage = wasUnlocked
         ? 'Esta tabla de cifrado ya estaba disponible.'
@@ -1122,7 +1383,7 @@ function updateProgressWindows() {
         } else if (level === 'level3') {
             progressText.textContent = `${progress.completed}/${progress.total} candados abiertos`;
             if (!progress.unlocked) {
-                progressText.textContent += ' • Consigue las 4 tablas de cifrado';
+                progressText.textContent += ' • Consigue la tabla de cifrado de tu grupo';
             } else if (progress.completed === 0) {
                 progressText.textContent += ' • Introduce el código correcto';
             }
@@ -1155,7 +1416,8 @@ function refreshHackProgress() {
         gameState.locksOpened.size,
         gameState.hackProgress.level3.total
     );
-    gameState.hackProgress.level3.unlocked = gameState.hackProgress.level2.completed >= gameState.hackProgress.level2.total;
+    // El nivel 3 se desbloquea cuando el grupo actual tiene su tabla de cifrado
+    gameState.hackProgress.level3.unlocked = gameState.currentGroup && gameState.cipherTablesUnlocked.has(gameState.currentGroup);
     
     const allLocksOpened = gameState.hackProgress.level3.completed >= gameState.hackProgress.level3.total;
     gameState.hackProgress.level4.completed = allLocksOpened ? gameState.hackProgress.level4.total : 0;
@@ -1245,8 +1507,7 @@ function addTerminalCommand(command) {
                 output = `Nivel ${level} desbloqueado. Acceso concedido`;
                 break;
             case 'decrypt_table':
-                const country = command.split(' ')[1];
-                output = `Tabla de cifrado para ${country} generada`;
+                output = `Tabla de cifrado para grupo de investigación generada`;
                 break;
             default:
                 output = 'Comando ejecutado';

@@ -406,14 +406,35 @@ function getOrderedCards(country) {
 }
 
 function showCulturalMessage(country) {
+    console.log('=== MOSTRANDO MENSAJE CULTURAL ===');
+    console.log('País:', country);
+    console.log('Mensaje cultural disponible:', culturalMessages[country] ? 'Sí' : 'No');
+    
     const modal = document.getElementById('culturalModal');
     const title = document.getElementById('culturalTitle');
     const message = document.getElementById('culturalMessage');
+    
+    if (!modal || !title || !message) {
+        console.error('Elementos del modal cultural no encontrados');
+        console.log('Modal:', modal);
+        console.log('Title:', title);
+        console.log('Message:', message);
+        return;
+    }
+    
+    if (!culturalMessages[country]) {
+        console.error('No hay mensaje cultural para el país:', country);
+        return;
+    }
+    
+    console.log('Título:', culturalMessages[country].title);
+    console.log('Mensaje:', culturalMessages[country].message);
     
     title.textContent = culturalMessages[country].title;
     message.innerHTML = `<h4>${culturalMessages[country].title}</h4><p>${culturalMessages[country].message.replace(/\n/g, '</p><p>')}</p>`;
     
     modal.style.display = 'block';
+    console.log('Modal cultural mostrado');
 }
 
 function setupEventListeners() {
@@ -984,7 +1005,9 @@ function attemptUnlock() {
             
             if (!alreadyUnlocked) {
                 // Mostrar mensaje cultural
+                console.log('Programando mensaje cultural para:', gameState.currentGroup);
                 setTimeout(() => {
+                    console.log('Ejecutando mensaje cultural...');
                     showCulturalMessage(gameState.currentGroup);
                 }, 2000);
             }
